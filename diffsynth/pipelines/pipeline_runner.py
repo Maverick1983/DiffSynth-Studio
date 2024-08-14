@@ -69,11 +69,10 @@ class SDVideoPipelineRunner:
         return pipeline_inputs
 
 
-    def save_output(self, video, output_folder, fps, config):
+    def save_output(self, video, output_folder, fps, config, video_output):
         os.makedirs(output_folder, exist_ok=True)
         save_frames(video, os.path.join(output_folder, "frames"))
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        save_video(video, os.path.join(output_folder, f"video_{timestamp}.mp4"), fps=fps)
+        save_video(video, os.path.join(output_folder, video_output), fps=fps)
         config["pipeline"]["pipeline_inputs"]["input_frames"] = []
         config["pipeline"]["pipeline_inputs"]["controlnet_frames"] = []
         with open(os.path.join(output_folder, "config.json"), 'w') as file:
@@ -99,8 +98,11 @@ class SDVideoPipelineRunner:
         output_video = self.synthesize_video(model_manager, pipe, config["pipeline"]["seed"], smoother, **config["pipeline"]["pipeline_inputs"])
         if self.in_streamlit: st.markdown("Synthesizing videos ... done!")
         if self.in_streamlit: st.markdown("Saving videos ...")
-        self.save_output(output_video, config["data"]["output_folder"], config["data"]["fps"], config)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        video_name_output = f"video_{timestamp}.mp4"
+        self.save_output(output_video, config["data"]["output_folder"], config["data"]["fps"], config, video_name_output)
         if self.in_streamlit: st.markdown("Saving videos ... done!")
         if self.in_streamlit: st.markdown("Finished!")
-        video_file = open(os.path.join(os.path.join(config["data"]["output_folder"], "video.mp4")), 'rb')
-        if self.in_streamlit: st.video(video_file.read())
+        if self.in_streamlit:
+            video_file = open(os.path.join(os.path.join(config["data"]["output_folder"], video_name_output)), 'rb')
+            st.video(video_file.read())
