@@ -2,7 +2,7 @@ import os, torch, json
 from .sd_video import ModelManager, SDVideoPipeline, ControlNetConfigUnit
 from ..processors.sequencial_processor import SequencialProcessor
 from ..data import VideoData, save_frames, save_video
-
+from datetime import datetime
 
 
 class SDVideoPipelineRunner:
@@ -72,7 +72,8 @@ class SDVideoPipelineRunner:
     def save_output(self, video, output_folder, fps, config):
         os.makedirs(output_folder, exist_ok=True)
         save_frames(video, os.path.join(output_folder, "frames"))
-        save_video(video, os.path.join(output_folder, "video.mp4"), fps=fps)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        save_video(video, os.path.join(output_folder, f"video_{timestamp}.mp4"), fps=fps)
         config["pipeline"]["pipeline_inputs"]["input_frames"] = []
         config["pipeline"]["pipeline_inputs"]["controlnet_frames"] = []
         with open(os.path.join(output_folder, "config.json"), 'w') as file:
