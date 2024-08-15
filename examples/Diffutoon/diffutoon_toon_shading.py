@@ -1,5 +1,5 @@
 from diffsynth import SDVideoPipelineRunner, download_models
-
+import sys
 
 # Download models (automatically)
 # `models/stable_diffusion/aingdiffusion_v12.safetensors`: [link](https://civitai.com/api/download/models/229575)
@@ -17,6 +17,8 @@ download_models([
     "TextualInversion_VeryBadImageNegative_v1.3"
 ])
 # The original video in the example is https://www.bilibili.com/video/BV1iG411a7sQ/.
+
+video_file = sys.argv[1]
 
 config = {
     "models": {
@@ -44,16 +46,16 @@ config = {
     },
     "data": {
         "input_frames": {
-            "video_file": "data/examples/diffutoon/input_video.mp4",
+            "video_file": f"{video_file}",
             "image_folder": None,
             "height": 1536,
             "width": 1536,
             "start_frame_id": 0,
-            "end_frame_id": 30
+            "end_frame_id": None
         },
         "controlnet_frames": [
             {
-                "video_file": "data/examples/diffutoon/input_video.mp4",
+                "video_file": f"{video_file}",
                 "image_folder": None,
                 "height": 1536,
                 "width": 1536,
@@ -61,7 +63,7 @@ config = {
                 "end_frame_id": 30
             },
             {
-                "video_file": "data/examples/diffutoon/input_video.mp4",
+                "video_file": f"{video_file}",
                 "image_folder": None,
                 "height": 1536,
                 "width": 1536,
